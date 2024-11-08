@@ -1,7 +1,6 @@
-package org.example;
+package StepTracker_Pac;
 
 import java.util.Scanner;
-import java.util.logging.Logger;
 
 public class MenuHandler {
     private final StepManager stepManager;

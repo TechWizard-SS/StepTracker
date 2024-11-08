@@ -1,4 +1,4 @@
-package org.example;
+package StepTracker_Pac;
 
 public enum Month {
     JANUARY(31),

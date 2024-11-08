@@ -1,4 +1,4 @@
-package org.example;
+package StepTracker_Pac;
 
 public class Converter {
     private static final double STEP_LENGTH = 0.75; //в метрах

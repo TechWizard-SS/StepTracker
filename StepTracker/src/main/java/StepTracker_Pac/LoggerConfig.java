@@ -1,4 +1,4 @@
-package org.example;
+package StepTracker_Pac;
 
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;

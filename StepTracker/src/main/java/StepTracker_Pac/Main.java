@@ -1,4 +1,4 @@
-package org.example;
+package StepTracker_Pac;
 
 public class Main {
     public static void main(String[] args) {

@@ -1,8 +1,8 @@
-package org.example;
+package StepTracker_Pac;
 
 import java.util.Scanner;
 
-import static org.example.LoggerConfig.logger;
+import static StepTracker_Pac.LoggerConfig.logger;
 
 public class StepManager {
     private final StepTracker stepTracker;
