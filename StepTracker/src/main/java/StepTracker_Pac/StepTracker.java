@@ -32,6 +32,10 @@ public class StepTracker {
             logger.warning("Попытка добавить некорректное количество шагов: " + steps);
             throw new IllegalArgumentException("Количество шагов должно быть положительным.");
         }
+        if (steps > 50000){
+            logger.warning("Попытка добавить некорректное количество шагов: " + steps);
+            throw new IllegalArgumentException("Количество шагов должно быть не более 50000.");
+        }
 
         stepsData.putIfAbsent(month, new HashMap<>());
         stepsData.get(month).put(day, steps);
