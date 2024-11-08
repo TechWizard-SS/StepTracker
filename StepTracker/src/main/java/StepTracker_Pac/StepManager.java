@@ -13,7 +13,7 @@ public class StepManager {
         this.converter = converter;
     }
 
-    public static void setNewGoal(StepTracker stepTracker) {
+    public void setNewGoal(StepTracker stepTracker) {
         System.out.println("Введите новую цель по шагам:");
         try {
             int newGoal = Integer.parseInt(scanner.nextLine());
@@ -24,12 +24,12 @@ public class StepManager {
     }
 
 
-    public static void addSteps(StepTracker stepTracker) {
-        Month month = MenuHandler.promptForMonth();
+    public void addSteps(StepTracker stepTracker) {
+        Month month = InputHandler.promptForMonth();
         if (month == null) return;
-        Integer day = MenuHandler.promptForDay(month);
+        Integer day = InputHandler.promptForDay(month);
         if (day == null) return;
-        Integer steps = MenuHandler.promptForSteps();
+        Integer steps = InputHandler.promptForSteps();
         if (steps == null) return;
         try {
             stepTracker.addSteps(month, day, steps);
@@ -39,8 +39,8 @@ public class StepManager {
         }
     }
 
-    public static void displayMonthlyStats(StepTracker stepTracker, Converter converter) {
-        Month month = MenuHandler.promptForMonth();
+    public void displayMonthlyStats(StepTracker stepTracker, Converter converter) {
+        Month month = InputHandler.promptForMonth();
         if (month == null) return;
         System.out.println("Общее количество шагов за " + month + ": " + stepTracker.getTotalStepsForMonth(month));
         System.out.println("Максимальное количество шагов за " + month + ": " + stepTracker.getMaxStepsForMonth(month));

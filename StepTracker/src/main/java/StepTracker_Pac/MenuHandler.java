@@ -30,7 +30,7 @@ public class MenuHandler {
                     stepManager.addSteps(stepTracker);
                     break;
                 case "3":
-                    StepManager.displayMonthlyStats(stepTracker, converter);
+                    stepManager.displayMonthlyStats(stepTracker, converter);
                     break;
                 default:
                     System.out.println("Неверный выбор. Попробуйте снова.");
@@ -44,51 +44,6 @@ public class MenuHandler {
         System.out.println("2. Добавить шаги за день");
         System.out.println("3. Показать статистику за месяц");
         System.out.println("Введите 'EXIT' для завершения работы");
-    }
-
-
-    public static Month promptForMonth() {
-        LoggerConfig.logger.info("Введите месяц (например, JANUARY): ");
-        String input = scanner.nextLine().toUpperCase();
-        try {
-            return Month.valueOf(input);
-        } catch (IllegalArgumentException e) {
-            LoggerConfig.logger.warning("Некорректный месяц. Попробуйте снова.");
-            return null;
-        }
-    }
-    public static Integer promptForDay(Month month) {
-        System.out.println("Введите день: ");
-        String input = scanner.nextLine();
-        try {
-            int day = Integer.parseInt(input);
-            if (day > 0 && day <= month.getDays()) {
-                return day;
-            } else {
-                LoggerConfig.logger.warning("Некорректный день. Попробуйте снова.");
-                return null;
-            }
-        } catch (NumberFormatException e) {
-            LoggerConfig.logger.warning("Введите число для дня.");
-            return null;
-        }
-    }
-
-    public static Integer promptForSteps() {
-        System.out.println("Введите количество шагов: ");
-        String input = scanner.nextLine();
-        try {
-            int steps = Integer.parseInt(input);
-            if (steps > 0) {
-                return steps;
-            } else {
-                LoggerConfig.logger.warning("Количество шагов должно быть положительным.");
-                return null;
-            }
-        } catch (NumberFormatException e) {
-            LoggerConfig.logger.warning("Введите число для количества шагов.");
-            return null;
-        }
     }
 
 }
