@@ -1,11 +1,12 @@
 package StepTracker_Pac;
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "steps")
 public class StepData {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "month", nullable = false)
@@ -54,5 +55,16 @@ public class StepData {
 
     public void setGoal(int goal) {
         this.goal = goal;
+    }
+
+    @Override
+    public String toString() {
+        return "StepData{" +
+                "id=" + id +
+                ", month='" + month + '\'' +
+                ", day=" + day +
+                ", steps=" + steps +
+                ", goal=" + goal +
+                '}';
     }
 }

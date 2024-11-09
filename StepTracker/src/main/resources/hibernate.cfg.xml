@@ -28,6 +28,7 @@
         <property name="hibernate.hbm2ddl.auto">update</property>
 
         <!-- Mapping files -->
-        <mapping class="org.example.StepData"/>
+        <mapping class="StepTracker_Pac.StepData"/>
+
     </session-factory>
 </hibernate-configuration>

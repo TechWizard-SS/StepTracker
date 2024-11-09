@@ -1,12 +1,16 @@
 package StepTracker_Pac;
 
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
 public class StepTracker {
     private static final Logger logger = Logger.getLogger(StepTracker.class.getName());
-    private final Map<Month, Map<Integer, Integer>> stepsData = new HashMap<>();
+
     private int stepGoal;
 
     public StepTracker(int stepGoal) {
@@ -28,43 +32,81 @@ public class StepTracker {
             logger.warning("Попытка добавить некорректный день: " + day);
             throw new IllegalArgumentException("Некорректный день: " + day);
         }
-        if (steps <= 0) {
+        if (steps <= 0 || steps > 50000) {
             logger.warning("Попытка добавить некорректное количество шагов: " + steps);
-            throw new IllegalArgumentException("Количество шагов должно быть положительным.");
-        }
-        if (steps > 50000){
-            logger.warning("Попытка добавить некорректное количество шагов: " + steps);
-            throw new IllegalArgumentException("Количество шагов должно быть не более 50000.");
+            throw new IllegalArgumentException("Количество шагов должно быть положительным и не более 50000.");
         }
 
-        stepsData.putIfAbsent(month, new HashMap<>());
-        stepsData.get(month).put(day, steps);
+    Session session = HibernateUtil.getSessionFactory().openSession();
+    Transaction transaction = null;
+    try {
+        transaction = session.beginTransaction();
+
+        StepData stepData = new StepData();
+        stepData.setMonth(month.name());
+        stepData.setDay(day);
+        stepData.setSteps(steps);
+        stepData.setGoal(stepGoal);
+
+        session.save(stepData);
+        transaction.commit();
         logger.info("Добавлено " + steps + " шагов в " + month + ", день " + day);
+    } catch (Exception e) {
+        if(transaction != null) transaction.rollback();
+    } finally {
+        session.close();
     }
+}
 
     public int getTotalStepsForMonth(Month month) {
-        return stepsData.getOrDefault(month, new HashMap<>())
-                .values()
-                .stream()
-                .mapToInt(Integer::intValue)
-                .sum();
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        int totalSteps = 0;
+        try {
+            List<StepData> stepsList = session.createQuery(
+                            "FROM StepData WHERE month = :month", StepData.class)
+                    .setParameter("month", month.name())
+                    .list();
+
+            totalSteps = stepsList.stream().mapToInt(StepData::getSteps).sum();
+        } finally {
+            session.close();
+        }
+
+        return totalSteps;
     }
 
     public int getMaxStepsForMonth(Month month) {
-        return stepsData.getOrDefault(month, new HashMap<>())
-                .values()
-                .stream()
-                .mapToInt(Integer::intValue)
-                .max()
-                .orElse(0);
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        int maxSteps = 0;
+        try {
+            List<StepData> stepsList = session.createQuery("FROM StepData WHERE month = :month", StepData.class)
+                    .setParameter("month", month.name())
+                    .list();
+            for (StepData step : stepsList) {
+                if (step.getSteps() > maxSteps) {
+                    maxSteps = step.getSteps();
+                }
+            }
+        } finally {
+            session.close();
+        }
+        return maxSteps;
     }
 
     public double getAverageStepsForMonth(Month month) {
-        Map<Integer, Integer> monthData = stepsData.getOrDefault(month, new HashMap<>());
-        return monthData.values().stream()
-                .mapToInt(Integer::intValue)
-                .average()
-                .orElse(0);
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        double averageSteps = 0;
+        try {
+            List<StepData> stepsList = session.createQuery(
+                            "FROM StepData WHERE month = :month", StepData.class)
+                    .setParameter("month", month.name())
+                    .list();
+
+            averageSteps = stepsList.stream().mapToInt(StepData::getSteps).average().orElse(0);
+        } finally {
+            session.close();
+        }
+        return averageSteps;
     }
 }
 

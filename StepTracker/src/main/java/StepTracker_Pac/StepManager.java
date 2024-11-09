@@ -42,8 +42,13 @@ public class StepManager {
     public void displayMonthlyStats(StepTracker stepTracker, Converter converter) {
         Month month = InputHandler.promptForMonth();
         if (month == null) return;
-        System.out.println("Общее количество шагов за " + month + ": " + stepTracker.getTotalStepsForMonth(month));
-        System.out.println("Максимальное количество шагов за " + month + ": " + stepTracker.getMaxStepsForMonth(month));
-        System.out.println("Среднее количество шагов за " + month + ": " + stepTracker.getAverageStepsForMonth(month));
+
+        int totalSteps = stepTracker.getTotalStepsForMonth(month);
+        int maxSteps = stepTracker.getMaxStepsForMonth(month);
+        double averageSteps = stepTracker.getAverageStepsForMonth(month);
+
+        System.out.println("Общее количество шагов за " + month + ": " + totalSteps);
+        System.out.println("Максимальное количество шагов за " + month + ": " + maxSteps);
+        System.out.println("Среднее количество шагов за " + month + ": " + averageSteps);
     }
 }

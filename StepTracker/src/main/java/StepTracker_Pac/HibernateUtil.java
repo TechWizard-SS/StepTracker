@@ -9,7 +9,8 @@ public class HibernateUtil {
     static {
         try {
             sessionFactory = new Configuration()
-                    .configure()
+                    .configure("hibernate.cfg.xml")
+                    .addAnnotatedClass(StepData.class)
                     .buildSessionFactory();
 
         } catch (Throwable e) {
