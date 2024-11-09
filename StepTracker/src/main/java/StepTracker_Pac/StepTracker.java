@@ -58,7 +58,7 @@ public class StepTracker {
     }
 }
 
-    public void clearAllSteps() {
+    public static void clearAllSteps() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
         try {
@@ -68,7 +68,7 @@ public class StepTracker {
             System.out.println("Все данные успешно удалены из базы данных.");
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            e.printStackTrace();
+            logger.warning("Ошибка при очистке данных из базы данных" + e);
         } finally {
             session.close();
         }

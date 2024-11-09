@@ -27,7 +27,7 @@ public class StepManager {
         }
     }
 
-    public void clearAllSteps() {
+    public void clearAllStepsAndPasswordVerification() {
         logger.warning("Запрос на очистку всех данных из базы данных.");
         String dbPassword = HibernateUtil.getDbPassword();
 
@@ -38,7 +38,7 @@ public class StepManager {
 
 
         // Логируем пароль для отладки
-        logger.warning(" используемый пароль базы данных: {}" + dbPassword);
+
 
         if (dbPassword == null || dbPassword.isEmpty()) {
             logger.warning("Пароль не найден или пуст.");
@@ -52,23 +52,10 @@ public class StepManager {
             return;
         }
         else {
-
-
-            Session session = HibernateUtil.getSessionFactory().openSession();
-            Transaction transaction = null;
-            try {
-                transaction = session.beginTransaction();
-                session.createQuery("DELETE FROM StepData").executeUpdate();
-                transaction.commit();
-                System.out.println("Все данные успешно удалены из базы данных.");
-            } catch (Exception e) {
-                if (transaction != null) transaction.rollback();
-                logger.warning("Ошибка при очистке данных из базы данных" + e);
-            } finally {
-                session.close();
-            }
+            logger.warning(" используемый пароль базы данных: " + "****");
+            StepTracker.clearAllSteps();
         }
-        }
+    }
 
 
     public void addSteps(StepTracker stepTracker) {

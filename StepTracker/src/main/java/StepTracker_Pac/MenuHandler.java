@@ -34,8 +34,8 @@ public class MenuHandler {
                     break;
 
                 case "4":
-                    stepManager.clearAllSteps();
-
+                    stepManager.clearAllStepsAndPasswordVerification();
+                    break;
                 default:
                     System.out.println("Неверный выбор. Попробуйте снова.");
             }
