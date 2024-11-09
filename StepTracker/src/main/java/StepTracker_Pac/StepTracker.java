@@ -58,6 +58,22 @@ public class StepTracker {
     }
 }
 
+    public void clearAllSteps() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+        try {
+            transaction = session.beginTransaction();
+            session.createQuery("DELETE FROM StepData").executeUpdate();
+            transaction.commit();
+            System.out.println("Все данные успешно удалены из базы данных.");
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
+
     public int getTotalStepsForMonth(Month month) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         int totalSteps = 0;

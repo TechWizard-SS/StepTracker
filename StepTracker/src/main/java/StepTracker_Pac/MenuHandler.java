@@ -23,15 +23,19 @@ public class MenuHandler {
                 break;
             }
             switch (choice) {
-                case "1":
+                case "3":
                     stepManager.setNewGoal(stepTracker);
                     break;
-                case "2":
+                case "1":
                     stepManager.addSteps(stepTracker);
                     break;
-                case "3":
+                case "2":
                     stepManager.displayMonthlyStats(stepTracker, converter);
                     break;
+
+                case "4":
+                    stepManager.clearAllSteps();
+
                 default:
                     System.out.println("Неверный выбор. Попробуйте снова.");
             }
@@ -39,11 +43,13 @@ public class MenuHandler {
     }
 
     private static void printMenu() {
-        System.out.println("Выберите действие:");
-        System.out.println("1. Установить новую цель по шагам");
-        System.out.println("2. Добавить шаги за день");
-        System.out.println("3. Показать статистику за месяц");
-        System.out.println("Введите 'EXIT' для завершения работы");
+        System.out.println("Выберите действие: ");
+        System.out.println("1. Добавить шаги за день: ");
+        System.out.println("2. Показать статистику за месяц: ");
+        System.out.println("3. Установить новую цель по шагам: ");
+        System.out.println("4. Очистить базу данных.");
+        System.out.println("Введите 'EXIT' для завершения работы.");
+
     }
 
 }

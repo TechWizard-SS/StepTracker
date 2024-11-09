@@ -3,11 +3,21 @@ package StepTracker_Pac;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import java.util.Properties;
+
 public class HibernateUtil {
     private static SessionFactory sessionFactory;
+    private static String dbPassword;
 
     static {
         try {
+            Configuration configuration = new Configuration();
+            configuration.configure("hibernate.cfg.xml"); // Указываем путь к вашему xml файлу
+
+            // Получаем свойства конфигурации
+            Properties properties = configuration.getProperties();
+            dbPassword = properties.getProperty("hibernate.connection.password");
+
             sessionFactory = new Configuration()
                     .configure("hibernate.cfg.xml")
                     .addAnnotatedClass(StepData.class)
@@ -27,4 +37,8 @@ public class HibernateUtil {
     public static void shutDown(){
         getSessionFactory().close();
     }
+    public static String getDbPassword() {
+        return dbPassword;
+    }
+
 }
