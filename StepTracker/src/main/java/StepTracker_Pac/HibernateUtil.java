@@ -12,7 +12,7 @@ public class HibernateUtil {
     static {
         try {
             Configuration configuration = new Configuration();
-            configuration.configure("hibernate.cfg.xml"); // Указываем путь к вашему xml файлу
+            configuration.configure("hibernate.cfg.xml"); // Указываем путь k xml файлу
 
             // Получаем свойства конфигурации
             Properties properties = configuration.getProperties();

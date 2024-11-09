@@ -17,8 +17,8 @@ public class StepManager {
         this.converter = converter;
     }
 
-    public void setNewGoal(StepTracker stepTracker) {
-        System.out.println("Введите новую цель по шагам:");
+    public void setNewGoal() {
+        System.out.println("Введите новую цель по шагам: ");
         try {
             int newGoal = Integer.parseInt(scanner.nextLine());
             stepTracker.setStepGoal(newGoal);
@@ -49,7 +49,6 @@ public class StepManager {
         if (!inputPassword.equals(dbPassword)) {
             logger.warning("Введен неверный пароль.");
             System.out.println("Неверный пароль. Операция отменена.");
-            return;
         }
         else {
             logger.warning(" используемый пароль базы данных: " + "****");
@@ -58,7 +57,7 @@ public class StepManager {
     }
 
 
-    public void addSteps(StepTracker stepTracker) {
+    public void addSteps() {
         Month month = InputHandler.promptForMonth();
         if (month == null) return;
         Integer day = InputHandler.promptForDay(month);
@@ -73,7 +72,7 @@ public class StepManager {
         }
     }
 
-    public void displayMonthlyStats(StepTracker stepTracker, Converter converter) {
+    public void displayMonthlyStats() {
         Month month = InputHandler.promptForMonth();
         if (month == null) return;
 
