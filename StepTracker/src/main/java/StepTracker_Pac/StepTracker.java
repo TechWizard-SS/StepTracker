@@ -6,6 +6,7 @@ import org.hibernate.Transaction;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 public class StepTracker {
@@ -28,85 +29,53 @@ public class StepTracker {
     }
 
     public void addSteps(Month month, int day, int steps) {
-        if (day <= 0 || day > month.getDays()) {
-            logger.warning("Попытка добавить некорректный день: " + day);
-            throw new IllegalArgumentException("Некорректный день: " + day);
+        validateDayAndSteps(month, day, steps);
+
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            try {
+                StepData stepData = new StepData();
+                stepData.setMonth(month.name());
+                stepData.setDay(day);
+                stepData.setSteps(steps);
+                stepData.setGoal(stepGoal);
+
+                session.save(stepData);
+                transaction.commit();
+                logger.info("Добавлено " + steps + " шагов в " + month + ", день " + day);
+            } catch (Exception e) {
+                transaction.rollback();
+                logger.warning("Ошибка при добавлении шагов: " + e.getMessage());
+                throw e;
+            }
         }
-        if (steps <= 0 || steps > 50000) {
-            logger.warning("Попытка добавить некорректное количество шагов: " + steps);
-            throw new IllegalArgumentException("Количество шагов должно быть положительным и не более 50000.");
-        }
-
-    Session session = HibernateUtil.getSessionFactory().openSession();
-    Transaction transaction = null;
-    try {
-        transaction = session.beginTransaction();
-
-        StepData stepData = new StepData();
-        stepData.setMonth(month.name());
-        stepData.setDay(day);
-        stepData.setSteps(steps);
-        stepData.setGoal(stepGoal);
-
-        session.save(stepData);
-        transaction.commit();
-        logger.info("Добавлено " + steps + " шагов в " + month + ", день " + day);
-    } catch (Exception e) {
-        if(transaction != null) transaction.rollback();
-    } finally {
-        session.close();
     }
-}
 
     public static void clearAllSteps() {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction transaction = null;
-        try {
-            transaction = session.beginTransaction();
+        executeTransaction(session -> {
             session.createQuery("DELETE FROM StepData").executeUpdate();
-            transaction.commit();
-            System.out.println("Все данные успешно удалены из базы данных.");
-        } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
-            logger.warning("Ошибка при очистке данных из базы данных" + e);
-        } finally {
-            session.close();
-        }
+            logger.info("Все данные успешно удалены из базы данных.");
+        }, "Ошибка при очистке данных из базы данных");
     }
 
     public int getTotalStepsForMonth(Month month) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        int totalSteps = 0;
-        try {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             List<StepData> stepsList = session.createQuery(
                             "FROM StepData WHERE month = :month", StepData.class)
                     .setParameter("month", month.name())
                     .list();
-
-            totalSteps = stepsList.stream().mapToInt(StepData::getSteps).sum();
-        } finally {
-            session.close();
+            return stepsList.stream().mapToInt(StepData::getSteps).sum();
         }
-
-        return totalSteps;
     }
 
     public int getMaxStepsForMonth(Month month) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        int maxSteps = 0;
-        try {
-            List<StepData> stepsList = session.createQuery("FROM StepData WHERE month = :month", StepData.class)
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Integer maxSteps = session.createQuery(
+                            "SELECT MAX(steps) FROM StepData WHERE month = :month", Integer.class)
                     .setParameter("month", month.name())
-                    .list();
-            for (StepData step : stepsList) {
-                if (step.getSteps() > maxSteps) {
-                    maxSteps = step.getSteps();
-                }
-            }
-        } finally {
-            session.close();
+                    .uniqueResult();
+            return maxSteps != null ? maxSteps : 0;
         }
-        return maxSteps;
     }
 
     public double getAverageStepsForMonth(Month month) {
@@ -127,6 +96,31 @@ public class StepTracker {
 
     public int getStepGoal() {
         return stepGoal;
+    }
+
+    private void validateDayAndSteps(Month month, int day, int steps) {
+        if (day <= 0 || day > month.getDays()) {
+            logger.warning("Попытка добавить некорректный день: " + day);
+            throw new IllegalArgumentException("Некорректный день: " + day);
+        }
+        if (steps <= 0 || steps > 50000) {
+            logger.warning("Попытка добавить некорректное количество шагов: " + steps);
+            throw new IllegalArgumentException("Количество шагов должно быть положительным и не более 50000.");
+        }
+    }
+
+    private static void executeTransaction(Consumer<Session> action, String errorMessage) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            try {
+                action.accept(session);
+                transaction.commit();
+            } catch (Exception e) {
+                transaction.rollback();
+                logger.warning(errorMessage + ": " + e.getMessage());
+                throw e;
+            }
+        }
     }
 }
 

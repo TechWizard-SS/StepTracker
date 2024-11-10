@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class MenuHandler {
     private final StepManager stepManager;
-    private static final Scanner scanner = new Scanner(System.in);
+    private static Scanner scanner = new Scanner(System.in);
 
     public MenuHandler(StepTracker stepTracker, Converter converter) {
         this.stepManager = new StepManager(stepTracker, converter);
