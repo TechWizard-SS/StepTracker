@@ -7,6 +7,7 @@ import java.util.function.Predicate;
 public class InputHandler {
     static Scanner scanner = new Scanner(System.in);
 
+
     public static Month promptForMonth() {
         while (true) {
             System.out.println("Введите месяц (например, JANUARY): ");
@@ -21,11 +22,11 @@ public class InputHandler {
     }
 
     public static Integer promptForDay(Month month) {
-        return promptForInt("Введите день: ", "Некорректный день. Попробуйте снова.", input ->(int) input > 0 && (int)input <= month.getDays());
+        return promptForInt("Введите день: ", "Некорректный день. Попробуйте снова.", input -> (int) input > 0 && (int) input <= month.getDays());
     }
 
     public static Integer promptForSteps() {
-        return promptForInt("Введите количество шагов: ", "Количество шагов должно быть положительным и менее 50000", input -> ((int)input > 0 || (int) input < 50000));
+        return promptForInt("Введите количество шагов: ", "Количество шагов должно быть положительным и менее 50000", input -> ((int) input > 0 || (int) input < 50000));
     }
 
     private static Integer promptForInt(String promptMessage, String errorMessage, Predicate condition) {
@@ -35,17 +36,17 @@ public class InputHandler {
             String k = "BACK";
             if (k.equalsIgnoreCase(input)) {
                 return null;
+            } else {
+                try {
+                    int value = Integer.parseInt(input);
+                    if (condition.test(value)) {
+                        return value;
+                    } else
+                        LoggerConfig.logger.warning(errorMessage);
+                } catch (NumberFormatException e) {
+                    LoggerConfig.logger.warning("Введите корректное число.");
+                }
             }
-            else {
-            try {
-                int value = Integer.parseInt(input);
-                if (condition.test(value)) {
-                    return value;
-                } else
-                    LoggerConfig.logger.warning(errorMessage);
-            } catch (NumberFormatException e) {
-                LoggerConfig.logger.warning("Введите корректное число.");
-            }}
         }
     }
 }

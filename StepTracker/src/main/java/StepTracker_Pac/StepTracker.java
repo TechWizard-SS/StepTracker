@@ -124,6 +124,10 @@ public class StepTracker {
         }
         return averageSteps;
     }
+
+    public int getStepGoal() {
+        return stepGoal;
+    }
 }
 
 
