@@ -3,9 +3,8 @@ package StepTracker_Pac;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import StepTracker_Pac.Converter;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
@@ -39,6 +38,12 @@ public class StepTracker {
                 stepData.setDay(day);
                 stepData.setSteps(steps);
                 stepData.setGoal(stepGoal);
+
+                double distance = Converter.toDistance(steps);
+                double calories = Converter.toCalories(steps);
+
+                System.out.println("Пройденный путь: " + distance + " метров.");
+                System.out.println("Сожжено калорий: " + calories);
 
                 session.save(stepData);
                 transaction.commit();

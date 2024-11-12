@@ -5,7 +5,7 @@ import java.util.Scanner;
 import java.util.function.Predicate;
 
 public class InputHandler {
-    static Scanner scanner = new Scanner(System.in);
+    public static Scanner scanner = new Scanner(System.in);
 
 
     public static Month promptForMonth() {
